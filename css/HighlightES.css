@@ -1,0 +1,19 @@
+.highlight-es--window {
+    color: #b20003;
+}
+
+.highlight-es--keyword {
+    color: #be5b00;
+}
+
+.highlight-es--string {
+    color: #006911;
+}
+
+.highlight-es--number {
+    color: #126371;
+}
+
+.highlight-es--comments {
+    color: #838581;
+}
