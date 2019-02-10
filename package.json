@@ -1,0 +1,11 @@
+{
+    "name": "@raichlsimon/highlight_es",
+    "version": "0.9.1",
+    "authors": [
+        {
+            "name": "Simon Raichl",
+            "homepage": "https://github.com/velociraptorcze"
+        }
+    ],
+    "license": "MIT"
+}

@@ -22,12 +22,13 @@ export default class HighlightES {
         this.content = elem.innerHTML.replace(/\|/g, "&vert;");
 
         let matchOptions = new MatchOptions(this),
+            beforeRegex = "(?<=[^\\w]|^)",
             matchGroups = [
                 matchOptions.newOption(/".*?"|'.*?'|`.*?`/g, "string"),
                 matchOptions.newOption(/\/\/.+/g, "comments"),
-                matchOptions.newOption(/\d|\.?\d/g, "number"),
-                matchOptions.newOption(HighlightES._windowProperties, "window"),
-                matchOptions.newOption(HighlightES._keywordsRegex, "keyword", "(?<=[^\\w]|^)"),
+                matchOptions.newOption(/\d+|\.?\d/g, "number"),
+                matchOptions.newOption(HighlightES._windowProperties, "window", beforeRegex),
+                matchOptions.newOption(HighlightES._keywordsRegex, "keyword", beforeRegex),
             ];
 
         matchGroups.forEach(matchGroup => this._transformMatches(matchGroup));
