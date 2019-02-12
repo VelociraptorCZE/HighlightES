@@ -19,16 +19,17 @@ export default class HighlightES {
     }
 
     _parse(elem) {
-        this.content = elem.innerHTML.replace(/\|/g, "&vert;");
+        this.content = HighlightES._escape(elem.innerHTML);
 
         let matchOptions = new MatchOptions(this),
-            beforeRegex = "(?<=[^\\w]|^)",
+            preRegex = "(?<=[^\\w]|^)",
             matchGroups = [
-                matchOptions.newOption(/".*?"|'.*?'|`.*?`/g, "string"),
-                matchOptions.newOption(/\/\/.+/g, "comments"),
-                matchOptions.newOption(/\d+|\.?\d/g, "number"),
-                matchOptions.newOption(HighlightES._windowProperties, "window", beforeRegex),
-                matchOptions.newOption(HighlightES._keywordsRegex, "keyword", beforeRegex),
+                matchOptions.newMatchGroup(/(&sol;&sol;.*)|&sol;&ast;(.*\n)+.*?&ast;&sol;/g, "comments"),
+                matchOptions.newMatchGroup(/&sol;.+?&sol;\w{0,5}/g, "regex"),
+                matchOptions.newMatchGroup(/&quot;.*?&quot;|'.*?'|`.*?`/g, "string"),
+                matchOptions.newMatchGroup(/\d+|\.?\d/g, "number"),
+                matchOptions.newMatchGroup(HighlightES._windowProperties, "window", preRegex),
+                matchOptions.newMatchGroup(HighlightES._keywordsRegex, "keyword", preRegex),
             ];
 
         matchGroups.forEach(matchGroup => this._transformMatches(matchGroup));
@@ -36,17 +37,37 @@ export default class HighlightES {
         elem.innerHTML = this.content;
     }
 
-    _transformMatches({ matches, css, beforeRegex }) {
+    _transformMatches({ matches, css, preRegex }) {
         if (matches) {
             matches.forEach(match => {
-                if (match) {
-                    this.content = this.content.replace(
-                        new RegExp(`(?!<.+)${beforeRegex + match}(?!">|="|<.+>|\\w)`),
-                        `<span class="highlight-es--${css}">${match}</span>`
-                    );
-                }
+                this.content = this.content.replace(
+                    new RegExp( `(?!<.+?>)${preRegex + match}(?!">|="|<.+?>|\\w)`),
+                    `<span class="highlight-es--${css}">${match}</span>`
+                );
             });
         }
+    }
+
+    static _escape(string) {
+        const escapeArray = [
+            [/\|/g, "&vert;"],
+            [/"/g, "&quot;"],
+            [/\$/g, "&dollar;"],
+            [/]/g, "&rsqb;"],
+            [/\[/g, "&lsqb;"],
+            [/\^/g, "&Hat;"],
+            [/\*/g, "&ast;"],
+            [/\//g, "&sol;"],
+            [/\\/g, "&bsol;"],
+            [/\?/g, "&quest;"],
+            [/\+/g, "&plus;"],
+            [/{/g, "&lcub;"],
+            [/}/g, "&rcub;"],
+            [/\(/g, "&lpar;"],
+            [/\)/g, "&rpar;"]
+        ];
+        escapeArray.forEach(esc => string = string.replace(esc[0], esc[1]));
+        return string;
     }
 
     static get _windowProperties() {

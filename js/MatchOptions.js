@@ -9,11 +9,11 @@ export default class MatchOptions {
         this.context = context;
     }
 
-    newOption(pattern, css, beforeRegex = "") {
+    newMatchGroup(pattern, css, preRegex = "") {
         return {
             matches: this.context.content.match(pattern),
             css: css,
-            beforeRegex: MatchOptions._checkRegex(beforeRegex)
+            preRegex: MatchOptions._checkRegex(preRegex),
         };
     }
 
