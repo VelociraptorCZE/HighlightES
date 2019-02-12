@@ -4,7 +4,7 @@
  * MIT License
  */
 
-.highlight-es--window {
+.highlight-es--window, .highlight-es--native {
     color: #b20003;
 }
 

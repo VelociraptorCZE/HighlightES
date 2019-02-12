@@ -7,6 +7,7 @@
 import {} from "./ArrayFrom.js";
 import RegexParser from "./RegexParser.js";
 import MatchOptions from "./MatchOptions.js";
+import escapeArray from "./EscapeArray.js";
 
 export default class HighlightES {
     constructor(elemSelector) {
@@ -25,9 +26,9 @@ export default class HighlightES {
             preRegex = "(?<=[^\\w]|^)",
             matchGroups = [
                 matchOptions.newMatchGroup(/(&sol;&sol;.*)|&sol;&ast;(.*\n)+.*?&ast;&sol;/g, "comments"),
-                matchOptions.newMatchGroup(/&sol;.+?&sol;\w{0,5}/g, "regex"),
+                matchOptions.newMatchGroup(/&sol;.+?&sol;\w{0,5}(?!\w|&)/g, "regex"),
                 matchOptions.newMatchGroup(/&quot;.*?&quot;|'.*?'|`.*?`/g, "string"),
-                matchOptions.newMatchGroup(/\d+|\.?\d/g, "number"),
+                matchOptions.newMatchGroup(/\d+/g, "number"),
                 matchOptions.newMatchGroup(HighlightES._windowProperties, "window", preRegex),
                 matchOptions.newMatchGroup(HighlightES._keywordsRegex, "keyword", preRegex),
             ];
@@ -41,7 +42,7 @@ export default class HighlightES {
         if (matches) {
             matches.forEach(match => {
                 this.content = this.content.replace(
-                    new RegExp( `(?!<.+?>)${preRegex + match}(?!">|="|<.+?>|\\w)`),
+                    new RegExp(`${preRegex + match}(?!\">|=\"|<.+?>|\\w)`),
                     `<span class="highlight-es--${css}">${match}</span>`
                 );
             });
@@ -49,23 +50,6 @@ export default class HighlightES {
     }
 
     static _escape(string) {
-        const escapeArray = [
-            [/\|/g, "&vert;"],
-            [/"/g, "&quot;"],
-            [/\$/g, "&dollar;"],
-            [/]/g, "&rsqb;"],
-            [/\[/g, "&lsqb;"],
-            [/\^/g, "&Hat;"],
-            [/\*/g, "&ast;"],
-            [/\//g, "&sol;"],
-            [/\\/g, "&bsol;"],
-            [/\?/g, "&quest;"],
-            [/\+/g, "&plus;"],
-            [/{/g, "&lcub;"],
-            [/}/g, "&rcub;"],
-            [/\(/g, "&lpar;"],
-            [/\)/g, "&rpar;"]
-        ];
         escapeArray.forEach(esc => string = string.replace(esc[0], esc[1]));
         return string;
     }
@@ -77,6 +61,6 @@ export default class HighlightES {
     static get _keywordsRegex() {
         return new RegExp(RegexParser("constructor|break|case|catch|continue|debugger|default|delete|" +
             "do|else|finally|for|function|if|in|instanceof|new|return|switch|this|throw|try|typeof|var|void|while|with|const|" +
-            "export|extends|import|super|let|yield|of|null|true|false|from|class"), "g");
+            "export|extends|import|super|let|yield|of|null|true|false|from|class|get|set"), "g");
     }
 }
