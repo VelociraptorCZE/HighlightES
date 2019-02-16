@@ -4,7 +4,7 @@
  * MIT License
  */
 
-const escapeArray = [
+export default [
     [/\|/g, "&vert;"],
     [/"/g, "&quot;"],
     [/\$/g, "&dollar;"],
@@ -21,7 +21,4 @@ const escapeArray = [
     [/\(/g, "&lpar;"],
     [/\)/g, "&rpar;"],
     [/\./g, "&period;"],
-    [/</g, "&lt;"],
 ];
-
-export default escapeArray;

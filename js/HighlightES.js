@@ -4,15 +4,19 @@
  * MIT License
  */
 
-import {} from "./ArrayFrom.js";
+import "./ArrayFrom.js";
 import RegexParser from "./RegexParser.js";
 import MatchOptions from "./MatchOptions.js";
 import escapeArray from "./EscapeArray.js";
 
 export default class HighlightES {
     constructor(elemSelector) {
-        this.elems = typeof elemSelector === "string" ? document.querySelectorAll(elemSelector) : elemSelector;
+        this.newElems = elemSelector;
         this.parse();
+    }
+
+    set newElems(elemSelector) {
+        this.elems = typeof elemSelector === "string" ? document.querySelectorAll(elemSelector) : elemSelector;
     }
 
     parse() {
@@ -42,7 +46,7 @@ export default class HighlightES {
         if (matches) {
             matches.forEach(match => {
                 this.content = this.content.replace(
-                    new RegExp(`${preRegex + match}(?!\">|=\"|<.+?>|\\w)`),
+                    new RegExp(`${preRegex + match}(?!">|="|<.+?>|\\w)`),
                     `<span class="highlight-es--${css}">${match}</span>`
                 );
             });
@@ -61,6 +65,6 @@ export default class HighlightES {
     static get _keywordsRegex() {
         return new RegExp(RegexParser("constructor|break|case|catch|continue|debugger|default|delete|" +
             "do|else|finally|for|function|if|in|instanceof|new|return|switch|this|throw|try|typeof|var|void|while|with|const|" +
-            "export|extends|import|super|let|yield|of|null|true|false|from|class|get|set"), "g");
+            "export|extends|import|super|let|yield|of|null|true|false|from|class|get|set|async|await"), "g");
     }
 }
